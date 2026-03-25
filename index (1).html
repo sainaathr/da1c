@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Payroll System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <h1 class="logo">Payroll<span>Sys</span></h1>
+            <button id="themeToggle" class="btn btn-outline" aria-label="Toggle Dark Mode">
+                <span class="theme-icon">🌙</span> Dark Mode
+            </button>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="hero">
+            <h1>Employee Management</h1>
+            <p>A simple and efficient way to manage your employee records, salaries, and payslips.</p>
+        </div>
+
+        <div class="action-grid">
+            <!-- Add Employee Card -->
+            <div class="action-card" id="btnOpenAdd">
+                <div class="icon-wrapper bg-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                </div>
+                <h3>Add Employee</h3>
+                <p>Register new employee and salary</p>
+            </div>
+
+            <!-- Generate Payslip Card -->
+            <div class="action-card" id="btnOpenPayslip">
+                <div class="icon-wrapper bg-green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+                <h3>Generate Pay Slip</h3>
+                <p>View and print salary details</p>
+            </div>
+
+            <!-- Delete Employee Card -->
+            <div class="action-card" id="btnOpenDelete">
+                <div class="icon-wrapper bg-red">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </div>
+                <h3>Delete Employee</h3>
+                <p>Remove an employee record</p>
+            </div>
+
+            <!-- Export Records Card -->
+            <div class="action-card" id="btnExport">
+                <div class="icon-wrapper bg-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </div>
+                <h3>Export to CSV</h3>
+                <p>Download all records as CSV</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Analytics Section -->
+        <div class="dashboard-section mt-4 mb-5">
+            <h2 class="section-heading">Payroll Analytics Dashboard</h2>
+            <div class="dashboard-grid">
+                <div class="card chart-container">
+                    <h3>Overall Payroll Distribution</h3>
+                    <canvas id="expenseChart" height="250"></canvas>
+                </div>
+                <div class="card chart-container">
+                    <h3>Top 5 Highest Paid Employees (Gross)</h3>
+                    <canvas id="topEmployeesChart" height="250"></canvas>
+                </div>
+            </div>
+            <div id="dashboardEmptyMsg" class="empty-state mt-4">
+                <p>No analytics to show. Please add some employees to see the dashboard.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals (unchanged HTML structure, but modified slightly for search) -->
+    <div id="addModal" class="modal">
+        <div class="modal-content card">
+            <span class="close-btn" data-modal="addModal">&times;</span>
+            <h2>Add New Employee</h2>
+            <form id="employeeForm">
+                <div class="form-group">
+                    <label for="empID">Employee ID</label>
+                    <input type="number" id="empID" required min="1" placeholder="e.g. 101">
+                </div>
+                <div class="form-group">
+                    <label for="empName">Employee Name</label>
+                    <input type="text" id="empName" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="basicPay">Basic Pay (₹)</label>
+                    <input type="number" id="basicPay" required min="0" step="0.01" placeholder="50000">
+                </div>
+                <div class="form-group">
+                    <label for="otHours">Overtime Hours</label>
+                    <input type="number" id="otHours" min="0" step="0.5" value="0" placeholder="0">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Save Record</button>
+                <div id="addMessage" class="message hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="payslipInitModal" class="modal">
+        <div class="modal-content card">
+            <span class="close-btn" data-modal="payslipInitModal">&times;</span>
+            <h2>Generate Pay Slip</h2>
+            <div class="form-group">
+                <label>Find Employee</label>
+                <input type="text" id="payslipSearch" class="search-input" placeholder="Search by name or ID...">
+            </div>
+            <div class="form-group">
+                <label>Select Employee</label>
+                <select id="payslipSelect" class="form-select size-5" size="5">
+                    <!-- Options injected via JS -->
+                </select>
+            </div>
+            <button id="btnGeneratePayslip" class="btn btn-success w-100">View Payslip</button>
+            <div id="payslipMessage" class="message hidden"></div>
+        </div>
+    </div>
+
+    <div id="payslipViewModal" class="modal">
+        <div class="modal-content card" style="max-width: 500px;">
+            <span class="close-btn" data-modal="payslipViewModal">&times;</span>
+            <div class="payslip-wrapper" id="payslipContainer">
+                <div class="payslip-header">
+                    <h2>PAYSLIP</h2>
+                    <p>Employee Payroll System</p>
+                </div>
+                <div class="payslip-body" id="payslipContent">
+                    <!-- Content injected via JS -->
+                </div>
+                <div class="payslip-footer">
+                    <button id="printBtn" class="btn btn-secondary">Print Payslip</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content card">
+            <span class="close-btn" data-modal="deleteModal">&times;</span>
+            <h2>Delete Employee</h2>
+            <div class="form-group">
+                <label>Find Employee</label>
+                <input type="text" id="deleteSearch" class="search-input" placeholder="Search by name or ID...">
+            </div>
+            <div class="form-group">
+                <label>Select Employee to Delete</label>
+                <select id="deleteSelect" class="form-select size-5" size="5">
+                    <!-- Options injected via JS -->
+                </select>
+            </div>
+            <button id="btnConfirmDelete" class="btn btn-danger w-100">Delete Record</button>
+            <div id="deleteMessage" class="message hidden"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
